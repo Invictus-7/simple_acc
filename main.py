@@ -28,7 +28,7 @@ def process_csv(csv_file):
 
 def compile_data():
     """Compiles data from several csv-files
-    using 'product' function."""
+    using python 'product' function."""
     preprocessed_data = []
     for i in range(3):
         package = process_csv(csv_list[i])
