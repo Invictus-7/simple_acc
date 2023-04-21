@@ -11,7 +11,7 @@ class Base:
 AlchemyBase = declarative_base(cls=Base)
 
 # как правильно создать движок для запуска на Ubuntu c PSQL?
-engine = create_engine('postgresql://financial_user:q123@localhost:5432/transactions', echo=False)
+engine = create_engine('postgresql://postgres:postgres@localhost:5432/transactions', echo=False)
 # можно запустить postgre в докере для локальной работы, а второй - будет на сервере
 AlchemyBase.metadata.create_all(engine)
 session = Session(engine)
