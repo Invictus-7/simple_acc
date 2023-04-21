@@ -50,7 +50,7 @@ def get_info_from_bank():
 
 
 def process_client_name(name_array: list) -> str:
-    """Cuts the first name and the patronymic, if
+    """Shortens the first name and the patronymic, if
      the length of the second name is more, than 8 chars."""
     separated_array = name_array[0].split(' ')
     if len(separated_array[0]) > 8:
