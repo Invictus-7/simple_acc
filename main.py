@@ -2,16 +2,17 @@ import csv
 from itertools import product
 import locale
 import os
+from pathlib import Path
 import requests
 
 from exceptions import APIResponseError
 from logging_config import logger
 from orm_models import BigTransaction, session, UsualTransaction
 
-# получаем путь до папки с файлом main, чтобы затем перейти в папку demo
-MAIN_DIR = os.path.dirname(os.path.abspath(__file__))
+# получаем путь до каталога, где лежит отдельно скрипт и отдельно папка demo с csv-файлами
+MAIN_DIR = Path(__file__).resolve().parent.parent
 CENTRAL_BANK_API = 'https://www.cbr-xml-daily.ru/daily_json.js'
-# настраиваем локаль, что файлы, найденный через os.walk, во всех ОС были отсортированы одинаково
+# настраиваем локаль, что файлы, найденные через os.walk, во всех ОС были отсортированы одинаково
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 
@@ -140,6 +141,7 @@ def main():
     csv_dir = os.path.join(MAIN_DIR, 'demo')
     # получаем все csv-файлы с полными путями
     csv_list = get_files(csv_dir)
+    # сортируем найденные файлы в алфавитном порядке независимо от локали
     sorted_csv = sorted(csv_list, key=lambda x: locale.strxfrm(x))
     # получаем все возможные комбинации данных из csv-файлов
     csv_combos = compile_data(sorted_csv)

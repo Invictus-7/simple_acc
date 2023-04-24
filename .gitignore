@@ -106,3 +106,5 @@ dmypy.json
 demo/clients.csv
 demo/volume.csv
 demo/currency.csv
+
+__pycache__
