@@ -7,7 +7,7 @@ import requests
 
 from exceptions import APIResponseError
 from logging_config import logger
-from orm_models import BigTransaction, session, UsualTransaction
+from db_models import BigTransaction, session, UsualTransaction
 
 # получаем путь до каталога, где лежит отдельно скрипт и отдельно папка demo с csv-файлами
 MAIN_DIR = Path(__file__).resolve().parent.parent
