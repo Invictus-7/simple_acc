@@ -15,9 +15,9 @@ class Base:
 
 AlchemyBase = declarative_base(cls=Base)
 
-engine = create_engine(
-    f'{os.getenv("DB_ENG")}://{os.getenv("DB_NAME")}:{os.getenv("DB_PASS")}'
-    f'@{os.getenv("DB_HOST")}:{os.getenv("DB_PORT")}/{os.getenv("DB_USER")}', echo=False)
+engine = create_engine('sqlite:///transactions.db')
+    # f'{os.getenv("DB_ENG")}://{os.getenv("DB_NAME")}:{os.getenv("DB_PASS")}'
+    # f'@{os.getenv("DB_HOST")}:{os.getenv("DB_PORT")}/{os.getenv("DB_USER")}', echo=False)
 
 AlchemyBase.metadata.create_all(engine)
 session = Session(engine)

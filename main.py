@@ -1,5 +1,6 @@
 import csv
 from itertools import product
+import locale
 import os
 import requests
 
@@ -10,6 +11,8 @@ from orm_models import BigTransaction, session, UsualTransaction
 # получаем путь до папки с файлом main, чтобы затем перейти в папку demo
 MAIN_DIR = os.path.dirname(os.path.abspath(__file__))
 CENTRAL_BANK_API = 'https://www.cbr-xml-daily.ru/daily_json.js'
+# настраиваем локаль, что файлы, найденный через os.walk, во всех ОС были отсортированы одинаково
+locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 
 def get_files(path):
@@ -51,7 +54,6 @@ def get_info_from_bank():
         # получаем JSON от банка
         bank_data = requests.get(CENTRAL_BANK_API)
         converted_data = bank_data.json().get('Valute')
-    # ПОПРОБОВАТЬ ПЕРЕХВАТИТЬ МАКСИМАЛЬНОЕ КОЛИЧЕСТВО ИСКЛЮЧЕНИЙ
     except requests.exceptions.RequestException:
         logger.error('Ошибка взаимодействия с API ЦБ РФ')
         raise APIResponseError('Ошибка взаимодействия с API ЦБ РФ')
@@ -138,8 +140,9 @@ def main():
     csv_dir = os.path.join(MAIN_DIR, 'demo')
     # получаем все csv-файлы с полными путями
     csv_list = get_files(csv_dir)
+    sorted_csv = sorted(csv_list, key=lambda x: locale.strxfrm(x))
     # получаем все возможные комбинации данных из csv-файлов
-    csv_combos = compile_data(csv_list)
+    csv_combos = compile_data(sorted_csv)
     # получаем от ЦБ РФ информацию о конкретной валюте
     bank_data = get_info_from_bank()
     # производим запись данных в таблицы БД
