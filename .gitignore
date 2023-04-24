@@ -74,12 +74,12 @@ celerybeat.pid
 # Environments
 infra/.env
 .venv
-env/
+.env/
 venv/
-ENV/
+.env/
 env.bak/
 venv.bak/
-env
+.env
 
 # Spyder project settings
 .spyderproject

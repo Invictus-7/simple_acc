@@ -101,11 +101,11 @@ def write_to_db(csv_combos, currency_attrs):
     id_counter = 1
     for element in csv_combos:
         # получаем ФИО клиента из комбинаций csv
-        name = process_client_name(element[0])
+        name = process_client_name(element[1])
         # получаем валюту пользователя из комбинаций csv
-        user_currency = element[1][0]
+        user_currency = element[2][0]
         # получаем сумму операции пользователя
-        transaction_amount = element[2][0]
+        transaction_amount = element[0][0]
         # получаем рублевую сумму операции, если валюта поддерживается ЦБ РФ
         ruble_sum = convert_to_rubles(user_currency, transaction_amount, currency_attrs)
         if ruble_sum is None:
