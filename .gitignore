@@ -101,3 +101,8 @@ dmypy.json
 
 # .idea
 .idea
+
+# csv
+demo/clients.csv
+demo/volume.csv
+demo/currency.csv

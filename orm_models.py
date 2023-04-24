@@ -1,5 +1,10 @@
+import os
+from dotenv import load_dotenv
+
 from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.orm import declarative_base, declared_attr, Session
+
+load_dotenv()
 
 
 class Base:
@@ -10,15 +15,17 @@ class Base:
 
 AlchemyBase = declarative_base(cls=Base)
 
-# как правильно создать движок для запуска на Ubuntu c PSQL?
-engine = create_engine('postgresql://finance:q123@localhost:5432/finance', echo=False)
-# можно запустить postgre в докере для локальной работы, а второй - будет на сервере
+engine = create_engine(
+    f'{os.getenv("DB_ENG")}://{os.getenv("DB_NAME")}:{os.getenv("DB_PASS")}'
+    f'@{os.getenv("DB_HOST")}:{os.getenv("DB_PORT")}/{os.getenv("DB_USER")}', echo=False)
+
 AlchemyBase.metadata.create_all(engine)
 session = Session(engine)
 
 
 class BaseTransaction(AlchemyBase):
-    """Abstract class for two tables."""
+    """Абстрактный класс для создания
+    двух разных таблиц."""
     __abstract__ = True
     id = Column(Integer, primary_key=True)
     name = Column(String(200))
@@ -30,14 +37,14 @@ class BaseTransaction(AlchemyBase):
 
 
 class UsualTransaction(BaseTransaction):
-    """Maps to table with transaction
-    amounts less than 1000 RUR."""
+    """Используется для записи данных в таблицу,
+    которая хранит сведения об операциях на сумму
+    меньше, либо равную 1000 рублей."""
     pass
 
 
 class BigTransaction(BaseTransaction):
-    """Maps to table with transaction
-    amounts greater than 1000 RUR."""
+    """Используется для записи данных в таблицу,
+    которая хранит сведения об операциях на сумму
+    больше 1000 рублей."""
     pass
-
-
