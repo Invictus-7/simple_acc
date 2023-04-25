@@ -3,7 +3,10 @@ from itertools import product
 import locale
 import os
 from pathlib import Path
+from typing import Union
+
 import requests
+
 
 from exceptions import APIResponseError
 from logging_config import logger
@@ -16,7 +19,7 @@ CENTRAL_BANK_API = 'https://www.cbr-xml-daily.ru/daily_json.js'
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 
-def get_files(path):
+def get_files(path: str) -> list[str]:
     """Получает пути к csv-файлам для дальнейшего
     использования их в функции compile_data."""
     files = []
@@ -33,24 +36,24 @@ def get_files(path):
     return files
 
 
-def process_csv(csv_file):
+def process_csv(csv_file) -> list[list]:
     """Считывает данные из csv-файлов."""
     with open(csv_file, newline='', encoding='UTF-8') as file:
         data = [row for row in csv.reader(file)]
         return data
 
 
-def compile_data(csv_list):
+def compile_data(csv_list) -> list:
     """Создает все возможные сочетания из
     содержимого csv-файлов при помощи функции product."""
     preprocessed_data = []
-    for i in range(3):
+    for i in range(len(csv_list)):
         package = process_csv(csv_list[i])
         preprocessed_data.append(package)
     return list(product(*preprocessed_data))
 
 
-def get_info_from_bank():
+def get_info_from_bank() -> dict:
     try:
         # получаем JSON от банка
         bank_data = requests.get(CENTRAL_BANK_API)
@@ -74,7 +77,7 @@ def process_client_name(name_array: list) -> str:
         return ' '.join(name_array)
 
 
-def convert_to_rubles(user_curr, trans_amount, currency_info):
+def convert_to_rubles(user_curr: str, trans_amount: str, currency_info: dict) -> Union[float, None]:
     """Пересчитывает валюту в рубли; проверяет, что такая валюта
     действительно поддерживается ЦБ РФ и предотвращает связанные с этим ошибки."""
     # если валюта операции - RUB, конверсия не производится
@@ -95,7 +98,7 @@ def convert_to_rubles(user_curr, trans_amount, currency_info):
         return ruble_sum
 
 
-def write_to_db(csv_combos, currency_attrs):
+def write_to_db(csv_combos: list, currency_attrs: dict) -> None:
     """Записывает в две разные таблицы информацию
     о финансовых операциях."""
     id_counter = 1
